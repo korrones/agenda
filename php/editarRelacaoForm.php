@@ -15,18 +15,18 @@
 </head>
 <body>
 
-	<?php include("menuSecretaria.php"); ?>
-
-	<?php
-
+	<?php include("menuSecretaria.php"); 
+	
 	require_once("conexaoBanco.php");
 	$idRelacao=$_POST['idRelacao'];
-	$comando="SELECT * FROM relacoes WHERE idRelacao=".$idRelacao;
+	$comando="SELECT * FROM relacoes WHERE idRelacao =".$idRelacao;
 	$resultado=mysqli_query($conexao,$comando);
 	$r=mysqli_fetch_assoc($resultado);
-
+	
 	?>
 	
+	
+
     <h3 class="titulos">Edição de relação</h3>  
 
 	<form action="editarRelacao.php" method="POST">
@@ -35,7 +35,7 @@
 		<div class="form-group">
 		  <label class="control-label">Descrição da relação *</label>  
 		<div class="col-md-4">
-		 <input type="text" value="<?=$r['descricao']?>" name="descricao" class="form-control" >
+		 <input type="text" value="<?=$r['idRelacao']?>" name="descricao" class="form-control" >
 		</div>
 		</div>
 		
@@ -43,7 +43,7 @@
 		<label class="control-label"></label>
 		<div class="col-md-8">
         <a href="relacaoForm.php"><button  class="btn btn-danger" type="button">Cancelar</button></a>
-			<button  class="btn btn-success" type="submit">Cadastrar</button>			
+			<button  class="btn btn-success" type="submit">Editar</button>			
 		</div>
 		</div>		
 	</form>

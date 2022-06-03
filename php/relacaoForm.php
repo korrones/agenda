@@ -49,8 +49,7 @@
 
 	<?php } ?>
 </div>
-    <?php include("menuSecretaria.php"); ?>   
-	
+    <?php include("menuSecretaria.php"); ?>    
 
     <h3 class="titulos">Cadastro de relação</h3>  
 
@@ -91,35 +90,33 @@
 			<th>Ações</th>
 		</tr>		
 				<tr>
+				
+				<?php
 
-				<?php 
+					require_once("conexaoBanco.php");
+					$comando="SELECT * FROM relacoes";
 
-				require_once("conexaoBanco.php");
-				$comando="SELECT * FROM relacoes";
+					if(isset($_GET['pesquisa']) && $_GET['pesquisa']!=""){
+						$pesquisa=$_GET['pesquisa'];
+						$comando = $comando . " WHERE descricao LIKE '$pesquisa%'";
+						//$comando.= " WHERE descricao LIKE '$pesquisa%'";
+					}
+					//echo $comando;
+					$resultado=mysqli_query($conexao, $comando);
+					$linhas=mysqli_num_rows($resultado);
 
-				if(isset($GET['pesquisa'])&& $_GET['pesquisa']!=""){
-					$pesquisa= $_GET['pesquisa'];
-					 $comando= $comando . " WHERE  descricao LIKE '".pesquisa."%'";
-					
-				}
-				//echo $comando;
-				$resultado=mysqli_query($conexao,$comando);
-				$linhas=mysqli_num_rows($resultado);
-
-				if($linhas==0){
-					echo "<tr><td colspan='2'> Nenhuma relação encontrada! </td></tr>";
-				}else{
+					if($linhas==0){
+						echo "<tr><td> colspan='2'> Nenhum relação encontrada! </td></tr>";
+					}else{
 						$relacoesRetornadas=array();
 
-						while ($r = mysqli_fetch_assoc($resultado)){
+						while($r = mysqli_fetch_assoc($resultado)){
 							array_push($relacoesRetornadas, $r);
-						}//fechamento do while
-						foreach($relacoesRetornadas as $r){
-							echo "<td> ".$r['descricao']."</td>";
-					
-				
 
-				?>
+						}// fechamento do while
+					}// fechamento do else
+					foreach($relacoesRetornadas as $r){
+						echo "<td> ".$r['descricao']." </td>";?>
 				
 				<td>
 				<form action="editarRelacaoForm.php" method="POST"  class="formAcao">
@@ -140,9 +137,11 @@
 				</form>
 				</td>
 			</tr>
-	<?php
-		}
-			} //fechamento do else
+			<?php
+			} // fechamento do foreach
+
+	
+
 ?>
 	</table>
 	</div>	
