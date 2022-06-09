@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agenda de compromissos - Secretária</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link  href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../css/formularios.css">
@@ -91,32 +91,31 @@
 		</tr>		
 				<tr>
 				
-				<?php
+		<?php
+			require_once("conexaoBanco.php");
+			$comando="SELECT * FROM relacoes";
 
-					require_once("conexaoBanco.php");
-					$comando="SELECT * FROM relacoes";
+			if(isset($_GET['pesquisa']) && $_GET['pesquisa']!="" ){
+				$pesquisa=$_GET['pesquisa'];
+				$comando= $comando . " WHERE descricao LIKE '".$pesquisa."%'";
+				//$comando.= " WHERE descricao LIKE '".$pesquisa."%'";				
+			}
+			//echo $comando;
+			$resultado=mysqli_query($conexao,$comando);
+			$linhas=mysqli_num_rows($resultado);
 
-					if(isset($_GET['pesquisa']) && $_GET['pesquisa']!=""){
-						$pesquisa=$_GET['pesquisa'];
-						$comando = $comando . " WHERE descricao LIKE '$pesquisa%'";
-						//$comando.= " WHERE descricao LIKE '$pesquisa%'";
-					}
-					//echo $comando;
-					$resultado=mysqli_query($conexao, $comando);
-					$linhas=mysqli_num_rows($resultado);
+			if($linhas==0){
+				echo "<tr><td colspan='2'> Nenhuma relação encontrada! </td></tr>";
+			}else{
+				$relacoesRetornadas=array();
 
-					if($linhas==0){
-						echo "<tr><td> colspan='2'> Nenhum relação encontrada! </td></tr>";
-					}else{
-						$relacoesRetornadas=array();
+				while($r = mysqli_fetch_assoc($resultado)){
+					array_push($relacoesRetornadas, $r);
+				} //fechamento do while
 
-						while($r = mysqli_fetch_assoc($resultado)){
-							array_push($relacoesRetornadas, $r);
-
-						}// fechamento do while
-					}// fechamento do else
-					foreach($relacoesRetornadas as $r){
-						echo "<td> ".$r['descricao']." </td>";?>
+				foreach($relacoesRetornadas as $r){
+					echo "<td> ".$r['descricao']." </td>";		
+			?>
 				
 				<td>
 				<form action="editarRelacaoForm.php" method="POST"  class="formAcao">
@@ -137,11 +136,10 @@
 				</form>
 				</td>
 			</tr>
-			<?php
-			} // fechamento do foreach
+	<?php
+		} //fechamento foreach
 
-	
-
+	} //fechamento do else
 ?>
 	</table>
 	</div>	

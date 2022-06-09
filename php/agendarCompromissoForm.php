@@ -43,8 +43,7 @@
         <span>Compromisso excluído com sucesso!</span>
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
-    <?php } ?>
-    
+    <?php } ?>    
 </div>
 
     <?php include("menuSecretaria.php"); ?>    
@@ -146,11 +145,7 @@
                 <input type="text" name="obs" class="form-control" value="">
             </div>
 		</div>       
-
-		<div class="form-group row" id="pessoa0">
-        <div class="row">
-         
-      
+     
 		
         <h5 class="col-md-8">Selecione a(s) pessoa(s) que fazem parte do compromisso* 
         <button type="button"  onclick="adicionarPessoa()" class="btn btn-secondary">Adicionar pessoa</button></h5>
@@ -226,10 +221,14 @@
                  ON t.idTipo=c.tiposCompromissos_idTipo";
 
                  if(isset($_GET['pesquisa']) && $_GET['pesquisa']!=""){
-                     $comando.=" WHERE descricao LIKE '".$_GET['pesquisa']."%'";
+                     $comando.=" WHERE c.descricao LIKE '".$_GET['pesquisa']."%'";
                  }
                  $resultado=mysqli_query($conexao, $comando);
                  $compromissos=array();
+                 $linhas=mysqli_num_rows($resultado);
+                 if($linhas==0){
+                     echo "<tr><td colspan='6'>Nenhum compromisso foi encontrado</td></tr>";
+                 }else{
                  while($c = mysqli_fetch_assoc($resultado)){
                         array_push($compromissos, $c);
                  }
@@ -237,8 +236,8 @@
                  foreach($compromissos as $c){
                      echo "<td>".$c['descricao']."</td>";
                      echo "<td>".$c['descCompromisso']."</td>";
-                     echo "<td>".$c['dataInicio']."</td>";
-                     echo "<td>".$c['dataFim']."</td>";
+                     echo "<td>".date('d/m/Y', strtotime($c['dataInicio']))."</td>";
+                     echo "<td>".date('d/m/Y', strtotime($c['dataFim']))."</td>";
                      echo "<td>".$c['hora']."</td>";
             ?>
 			<td>
@@ -260,7 +259,10 @@
 			</form>
 			</td>
 		</tr>	
-                 <?php } ?>
+                 <?php
+                  } //fechamento do foreach
+                }  //fechamento do else
+                ?>
 
 	</table>
 	</div>

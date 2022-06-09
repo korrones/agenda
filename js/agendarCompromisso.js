@@ -46,7 +46,7 @@ function preencherEndereco(cep){
         if (!("erro" in dados)) {       
             $("#rua").val(dados.logradouro);
             $("#bairro").val(dados.bairro);
-            $("#cidade").val(dados.localidade);                              
+            $("#cidade").val(dados.localidade);                                 
         }else {                        
             alert("CEP não encontrado! Preencha o endereço manualmente.");
         }

@@ -1,3 +1,10 @@
+<?php
+	session_start();
+
+	if(isset($_SESSION['nivel']) && $_SESSION['nivel']=="1"){
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -88,18 +95,16 @@
 		<div class="col-md-8">
 		 <select name="idRelacao" class="form-control">
 			 <?php
-				require_once("conexaoBanco.php");
-				$comando="SELECT * FROM relacoes";
-				$resultado=mysqli_query($conexao,$comando);
-				$relacoesRetornadas=array();
-				while($r = mysqli_fetch_assoc($resultado)){
-					array_push($relacoesRetornadas, $r);
-				}
-				foreach($relacoesRetornadas as $r){
-					//criar um option para cada relacoes :-)
-					echo "<option value='".$r['idRelacao']."'> ".$r['descricao']." </option>";
-
-				}
+					require_once("conexaoBanco.php");
+					$comando="SELECT * FROM relacoes";
+					$resultado=mysqli_query($conexao,$comando);
+					$relacoesRetornadas=array();
+					while($r = mysqli_fetch_assoc($resultado)){
+						array_push($relacoesRetornadas, $r);
+					}
+					foreach($relacoesRetornadas as $r){
+						echo "<option value='".$r['idRelacao']."'> ".$r['descricao']." </option>";
+					}
 			 ?>
 		 </select>
 		</div>
@@ -141,34 +146,35 @@
 			<th>Ações</th>
 		</tr>
 		<?php
-			$comando="SELECT p.*,r.descricao FROM pessoas p INNER JOIN relacoes r ON
+			$comando="SELECT p.*, r.descricao FROM pessoas p INNER JOIN relacoes r ON 
 			p.relacoes_idRelacao=r.idRelacao";
-			
-			if(isset($_GET['pesquisa']) && $_GET['pesquisa']!=""){
+
+			if(isset($_GET['pesquisa']) &&  $_GET['pesquisa']!=""){
 				$pesquisa = $_GET['pesquisa'];
 				$comando = $comando . " WHERE p.nome LIKE '".$pesquisa."%'";
 			}
-			// echo $comando;
+			//echo $comando;
 			$resultado=mysqli_query($conexao, $comando);
-			$pessoasRetornas= array();
+			$pessoasRetornadas= array();
 			$linhas=mysqli_num_rows($resultado);
 
 			if($linhas==0){
-				echo"<tr><td colspan='6'>Nenhuma pessoa encontrada</td></tr>";
+				echo "<tr><td colspan='6'>Nenhuma pessoa foi encontrada!</td></tr>";
 			}else{
 				while($p = mysqli_fetch_assoc($resultado)){
-					array_push($pessoasRetornas, $p);
-				}
-				foreach($pessoasRetornas as $p){
+					array_push($pessoasRetornadas, $p);
+				} //fechamento do while
+				foreach($pessoasRetornadas as $p){
 					echo "<tr>";
 					echo "<td><img class='imagensConsulta' src='../fotos/".$p['foto']."'></td>";
 					echo "<td>".$p['nome']."</td>";
 					echo "<td>".$p['sobrenome']."</td>";
 					echo "<td>".$p['email']."</td>";
-					echo "<td>".$p['descricao']."</td>";			
-			
-		?>
-			<td>		
+					echo "<td>".$p['descricao']."</td>";					
+							
+		?>			
+
+			 <td>
 			<form action="editarPessoaForm.php" method="POST" class="formAcao">
 				<input type="hidden" name="idPessoa" value="<?=$p['idPessoa']?>">
 				<button type="submit" class="botaoAcao">
@@ -186,11 +192,11 @@
 				</button>				
 			</form>			
 			</td>
-		
 		</tr>
+
 		<?php
-				}//fechamento foreach
-			}//fechamento do else
+				} //fechamento do foreach
+			} //fechamento do else
 		?>
 	</table>
 	</div>
@@ -198,3 +204,10 @@
 </body>
 </html>
 
+
+<?php
+	}else{
+		header("Location: alertaEfetuarLogin.html");
+	}
+
+?>
